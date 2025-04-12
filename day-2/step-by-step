@@ -1,0 +1,158 @@
+ test
+
+kubectl port-forward service/prometheus-operated -n monitoring 9090:9090 --address 0.0.0.0
+
+kubectl port-forward service/monitoring-grafana -n monitoring 8080:80 --address 0.0.0.0
+
+kubectl port-forward service/alertmanager-operated -n monitoring 9093:9093 --address 0.0.0.0
+
+
+for Grafana : 
+username : admin
+passwd :  prom-operator
+
+
+
+
+sudo apt update && sudo apt upgrade -y  
+sudo apt install -y curl unzip  
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# Check version
+aws --version
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# Check version
+aws --version
+
+
+
+ EC2 instance’s IAM role has the following policies:
+
+AmazonEKSClusterPolicy
+
+AmazonEKSWorkerNodePolicy
+
+AmazonEKS_CNI_Policy
+
+AmazonEC2ContainerRegistryReadOnly
+
+IAMFullAccess
+
+AmazonEC2FullAccess
+
+aws configure
+
+Access key : AKIA5CBGS7HJYBBLNQH6
+
+Secret access key : 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
+
+curl -s --location "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+
+# Verify
+eksctl version
+
+curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+# Verify
+kubectl version --client
+
+eksctl create cluster --name=observability \
+                      --region=us-east-1 \
+                      --zones=us-east-1a,us-east-1b \
+                      --without-nodegroup
+
+
+eksctl utils associate-iam-oidc-provider \
+    --region us-east-1 \
+    --cluster observability \
+    --approve
+
+
+
+
+eksctl create nodegroup --cluster=observability \
+                        --region=us-east-1 \
+                        --name=observability-ng-private \
+                        --node-type=t3.medium \
+                        --nodes-min=2 \
+                        --nodes-max=3 \
+                        --node-volume-size=20 \
+                        --managed \
+                        --asg-access \
+                        --external-dns-access \
+                        --full-ecr-access \
+                        --appmesh-access \
+                        --alb-ingress-access \
+                        --node-private-networking
+
+# Update ./kube/config file
+aws eks update-kubeconfig --name observability
+
+
+
+kubectl get nodes
+kubectl get svc
+
+git clone observability 
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+kubectl create ns monitoring
+
+
+cd day-2
+
+helm install monitoring prometheus-community/kube-prometheus-stack \
+-n monitoring \
+-f ./custom_kube_prometheus_stack.yml
+
+kubectl get all -n monitoring
+
+
+
+
+
+
+kubectl port-forward service/prometheus-operated -n monitoring 9090:9090 --address 0.0.0.0
+
+kubectl port-forward service/monitoring-grafana -n monitoring 8080:80 --address 0.0.0.0
+
+kubectl port-forward service/alertmanager-operated -n monitoring 9093:9093 --address 0.0.0.0
+
+
+43.205.127.116:9090
+43.205.127.116:8080
+43.205.127.116:9093
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
