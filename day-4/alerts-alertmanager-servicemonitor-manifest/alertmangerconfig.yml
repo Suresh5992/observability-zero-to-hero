@@ -10,16 +10,17 @@ spec:
     repeatInterval: 30m
     receiver: 'null'
     routes:
-    - matchers:
-      - name: alertname
-        value: HighCpuUsage
-      receiver: 'send-email'
-    - matchers:
-      - name: alertname
-        value: PodRestart
-      receiver: 'send-email'
-      repeatInterval: 5m
+      - matchers:
+          - name: alertname
+            value: HighCpuUsage
+        receiver: 'send-email'
+      - matchers:
+          - name: alertname
+            value: PodRestart
+        receiver: 'send-email'
+        repeatInterval: 5m
   receivers:
+<<<<<<< HEAD
   - name: 'send-email'
     emailConfigs:
     - to: surya.k9010@gmail.com
@@ -32,3 +33,17 @@ spec:
         name: mail-pass
         key: gmail-pass
   - name: 'null'
+=======
+    - name: 'send-email'
+      emailConfigs:
+        - to: sknum84@gmail.com
+          from: sknum84@gmail.com
+          sendResolved: false
+          smarthost: smtp.gmail.com:587
+          authUsername: sknum84@gmail.com
+          authIdentity: sknum84@gmail.com
+          authPassword:
+            name: mail-pass
+            key: gmail-pass
+    - name: 'null'
+>>>>>>> a9bd9e4 (Your commit message)
